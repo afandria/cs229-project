@@ -17,7 +17,7 @@ suffix=fileName(end-3:end);
 if strcmp(suffix,'.wav'),
    fileName = fileName(1:end-4); % Remove .wav if appended
 end;
-display(fileName);
+
 % Open .wav file:
 fid = fopen([fileName,'.wav'],'r'); % Open file for reading
 if fid==-1,
