@@ -26,11 +26,14 @@ for personIndex = 1:length(people)
     perm = randperm(length(files)); % you must randomize!
     
     for fileIndex = perm
+        filepath = strcat(root,'/',people(personIndex),'/')
         fileName = char(files(fileIndex));
+        fileName = strcat(filepath,fileName);
         [x,phoneme,endpoints] = wavReadTimit(fileName);
         display(length(x));
         x = x(1:28000); % BIG PROBLEM HERE. WHAT IF A CLIP IS SHORTER THAN 1.75 seconds?
         S = spectrogram(x', 320, 160, 512, 16000);
+        size(S)
         features = reductionHandle(S); % expect a column vector
         
         if fileIndex > (1 - testFraction) * length(files)
@@ -39,12 +42,16 @@ for personIndex = 1:length(people)
             
             if (strcmp(taskType, 'verification') == 1) % 1 for equality
                 if personIndex == 1
-                    testY = [testY; 1];
+                    vec = [1, 0];
+                    testY = [testY; vec];
                 else
-                    testY = [testY; 0];
+                    vec = [0, 1];
+                    testY = [testY; vec];
                 end
             else
-                testY = [testY; personIndex];
+                vec = zeros(1, length(people));
+                vec(personIndex) = 1;
+                testY = [testY; vec];
             end
             
         else
@@ -53,12 +60,16 @@ for personIndex = 1:length(people)
             
             if (strcmp(taskType, 'verification') == 1) % 1 for equality
                 if personIndex == 1
-                    trainY = [trainY; 1];
+                    vec = [1, 0];
+                    trainY = [trainY; vec];
                 else
-                    trainY = [trainY; 0];
+                    vec = [0, 1];
+                    trainY = [trainY; vec];
                 end
             else
-                trainY = [trainY; personIndex];
+                vec = zeros(1, length(people));
+                vec(personIndex) = 1;
+                trainY = [trainY; vec];
             end
                         
         end

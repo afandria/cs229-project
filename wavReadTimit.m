@@ -13,9 +13,12 @@ if nargin<1,
 end;
 
 fileName=lower(fileName); % Convert all letters to lower case.
-suffix=fileName(end-3:end);
+size(fileName);
+fileName=char(fileName);
+size(fileName);
+suffix=fileName(length(fileName)-3:length(fileName));
 if strcmp(suffix,'.wav'),
-   fileName = fileName(1:end-4); % Remove .wav if appended
+   fileName = fileName(1:length(fileName)-4); % Remove .wav if appended
 end;
 
 % Open .wav file:
