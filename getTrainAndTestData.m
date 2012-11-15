@@ -1,4 +1,9 @@
 function [trainX, trainY, testX, testY] = getTrainAndTestData(people, root, reductionHandle, taskType, testFraction)
+% people = cell array of strings, the speakers involved
+% root = directory where the folders of individuals' data are
+% reductionHandle = reduction function
+% taskType = 'verification' or 'recognition'
+% testFraction = [0.1]; fraction of data to reserve for testing
 
 if nargin < 5
     testFraction = .30;
