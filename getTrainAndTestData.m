@@ -43,15 +43,12 @@ for personIndex = 1:length(people)
         fileName = char(files(fileIndex));
         fileName = strcat(filepath,fileName);
         [x,phoneme,endpoints] = wavReadTimit(fileName);
-        display('Length of x')
-        display(length(x));
         
         for ind=1:CLIP_FRAMES:length(x)
             if ind+CLIP_FRAMES > length(x)
                 continue % MAYBE IN THE FUTURE DON'T IGNORE
             end
             
-            display(size(bigY, 1));
             tempX = x(ind:ind+CLIP_FRAMES); 
             S = spectrogram(tempX', WINDOW_SIZE, WINDOW_OVERLAP, NFFT, FRAMES_PER_SECOND);
             features = reductionHandle(S); % expect a column vector
