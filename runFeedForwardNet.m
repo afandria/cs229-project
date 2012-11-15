@@ -1,10 +1,10 @@
 
-function [perf,err] =runFeedForwardNet(trainX,trainY,testX,testY,hidden)
+function [net,perf,err] =runFeedForwardNet(trainX,trainY,testX,testY,hidden, iterations)
 inputsize = size(trainX',1);
 %inputsize
 %hidden
 net = patternnet([hidden]);
-net.trainParam.epochs = 50;
+net.trainParam.epochs = iterations;
 net.trainParam.showWindow = 0;
 net = train(net,trainX',trainY');
 y = net(testX');
@@ -16,6 +16,6 @@ for i = 1:size(y,2)
 end
 %err 
 %size(y,2)
-err = err/size(y,2)
-perf = perform(net,testY',y)
+err = err/size(y,2);
+perf = perform(net,testY',y);
      
