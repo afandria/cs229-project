@@ -1,16 +1,20 @@
-function [trainX, trainY, testX, testY] = getTrainAndTestData(people, root, reductionHandle, taskType, testFraction)
+function [trainX, trainY, testX, testY] = getTrainAndTestData(people, root, reductionHandle, taskType, testFraction,unskewfactor)
 % people = cell array of strings, the speakers involved
 % root = directory where the folders of individuals' data are
 % reductionHandle = reduction function
 % taskType = 'verification' or 'recognition'
 % testFraction = [0.1]; fraction of data to reserve for testing
+% unskewfactor = [>0]; this is only rleveant for the verification task.
+% This specifies the ratio we want between the positive and negative
+% examples
 
 CLIP_FRAMES = 24000;
 FRAMES_PER_SECOND = 16000;
 NFFT = 512;
 WINDOW_SIZE = 320;
 WINDOW_OVERLAP = 160;
-
+F=logspace(1,4);
+%NFFT=F;
 if nargin < 5
     testFraction = .30;
 end
@@ -85,5 +89,24 @@ for i=perm
     else
         testX = [testX; bigX(i, :)];
         testY = [testY; bigY(i, :)];
+    end
+end
+
+if(strcmp(taskType,'verification'))
+    posIndices =[];
+    for i = 1:size(trainY,1)
+        if trainY(i,1) ==1
+            posIndices = [posIndices,i];
+        end
+    end
+    
+    numOfPosInTrain = sum(trainY(:,1)==1);
+    numOfNegInTrain = sum(trainY(:,1)==0);
+    while numOfPosInTrain/numOfNegInTrain <unskewfactor
+        index = ceil(rand(1)*size(posIndices,1));
+        index = posIndices(index);
+        trainX = [trainX;trainX(index,:)];
+        trainY = [trainY;trainY(index,:)];
+        numOfPosInTrain = numOfPosInTrain +1;
     end
 end

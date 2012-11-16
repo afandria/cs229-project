@@ -16,11 +16,11 @@ nameFolds(ismember(nameFolds,{interestingPerson})) = [];
 nameFolds = [{interestingPerson}; nameFolds];
 nameFolds = nameFolds';
 
-%[trainX, trainY, testX, testY] = getTrainAndTestData(nameFolds, ROOT, @reductionOverTimeSteps, 'verification', 0.20);
-[trainX, trainY, testX, testY] = getTrainAndTestData({'madd0', 'fblv0', 'maeo0', 'mwrp0', 'mwre0'}, ROOT, @reductionOverTimeSteps, 'verification', 0.20);
+[trainX, trainY, testX, testY] = getTrainAndTestData(nameFolds, ROOT, @reductionOverTimeSteps, 'verification', 0.30,1.0);
+%[trainX, trainY, testX, testY] = getTrainAndTestData({'madd0', 'fblv0', 'maeo0', 'mwrp0', 'mwre0'}, ROOT, @reductionOverTimeSteps, 'recognition', 0.20);
 
 ITERATIONS = 30;
-[net, perf, fp,fn] = runFeedForwardNet(trainX, trainY, testX, testY, [ 4], ITERATIONS,'verification');
+[net, perf, fp,fn] = runFeedForwardNet(trainX, trainY, testX, testY, [4 4 4], ITERATIONS,'verification');
 
 perf %OOS error
 
