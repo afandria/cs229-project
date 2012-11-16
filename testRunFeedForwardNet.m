@@ -20,7 +20,7 @@ nameFolds = nameFolds';
 [trainX, trainY, testX, testY] = getTrainAndTestData({'madd0', 'fblv0', 'maeo0', 'mwrp0', 'mwre0'}, ROOT, @reductionOverTimeSteps, 'verification', 0.20);
 
 ITERATIONS = 30;
-[net, perf, err] = runFeedForwardNet(trainX, trainY, testX, testY, [10 4], ITERATIONS);
+[net, perf, fp,fn] = runFeedForwardNet(trainX, trainY, testX, testY, [ 4], ITERATIONS,'verification');
 
 perf %OOS error
 
