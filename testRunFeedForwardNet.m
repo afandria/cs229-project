@@ -18,12 +18,15 @@ nameFolds = nameFolds';
 
 %[trainX, trainY, testX, testY] = getTrainAndTestData(nameFolds, ROOT, @reductionOverTimeSteps, 'recognition', 0.30,1.0);
 tic
-[trainX, trainY, testX, testY] = getTrainAndTestData({'madd0', 'fblv0', 'maeo0', 'mwrp0', 'mwre0'}, ROOT, @reductionOverTimeSteps, 'recognition', 0.30);
+%[trainX, trainY, testX, testY] = getTrainAndTestData({'madd0', 'fblv0', 'maeo0', 'mwrp0', 'mwre0'}, ROOT, @reductionOverTimeSteps, 'recognition', 0.30);
 %[trainX, trainY, testX, testY] = getTrainAndTestData({'madd0', 'mwre0'}, ROOT, @reductionOverTimeSteps, 'recognition', 0.30);
+[trainX, trainY, testX, testY] = getTrainAndTestData({'acl8117', 'avs2116'}, 'data', @reductionOverTimeSteps, 'recognition', 0.30);
+
 
 
 ITERATIONS = 30;
-[net, perf, fp,fn] = runFeedForwardNet(trainX, trainY, testX, testY, [10 4], ITERATIONS,'recognition');
+TRAIN_FUNCTION = 'trainlm'; %'trainbr';
+[net, perf, fp,fn] = runFeedForwardNet(trainX, trainY, testX, testY, [30 14 ], ITERATIONS,'recognition', TRAIN_FUNCTION);
 
 perf %OOS error
 

@@ -1,4 +1,4 @@
-function [trainX, trainY, testX, testY] = getTrainAndTestData(people, root, reductionHandle, taskType, testFraction,unskewfactor)
+function [trainX, trainY, testX, testY, S] = getTrainAndTestData(people, root, reductionHandle, taskType, testFraction,unskewfactor)
 % people = cell array of strings, the speakers involved
 % root = directory where the folders of individuals' data are
 % reductionHandle = reduction function
@@ -7,6 +7,8 @@ function [trainX, trainY, testX, testY] = getTrainAndTestData(people, root, redu
 % unskewfactor = [>0]; this is only rleveant for the verification task.
 % This specifies the ratio we want between the positive and negative
 % examples
+
+MAX_CLIPS_EVER = 600;
 
 CLIP_FRAMES = 24000;
 FRAMES_PER_SECOND = 16000;
@@ -36,26 +38,44 @@ testY = [];
 bigX = [];
 bigY = [];
 
+S = cell(length(people), MAX_CLIPS_EVER);
+
 for personIndex = 1:length(people)
+    
+    count = 0;
     
     % the people are a cell array, people(personIndex) is too
     % make it a string again with char()
     files = findFiles(char(people(personIndex)), root);
     display(files)
     for fileIndex = 1:length(files)
+        if count > MAX_CLIPS_EVER % no point in using it.
+            display('person exceeded max count')
+            display(char(people(personIndex)))
+            break
+        end
+        
         filepath = strcat(root,'/',people(personIndex),'/');
         fileName = char(files(fileIndex));
         fileName = strcat(filepath,fileName);
-        [x,phoneme,endpoints] = wavReadTimit(fileName);
+        %[x,phoneme,endpoints] = wavReadTimit(fileName);
+        x = wavread(fileName{1});
         
         for ind=1:CLIP_FRAMES:length(x)
             if ind+CLIP_FRAMES > length(x)
                 continue % MAYBE IN THE FUTURE DON'T IGNORE
             end
             
+            count = count + 1;
+            if count > MAX_CLIPS_EVER % no point in using it.
+                display('person exceeded max count')
+                display(char(people(personIndex)))
+                break
+            end
+            
             tempX = x(ind:ind+CLIP_FRAMES); 
-            S = spectrogram(tempX', WINDOW_SIZE, WINDOW_OVERLAP, NFFT, FRAMES_PER_SECOND);
-            features = reductionHandle(S); % expect a column vector
+            S{personIndex, count} = spectrogram(tempX', WINDOW_SIZE, WINDOW_OVERLAP, NFFT, FRAMES_PER_SECOND);
+            features = reductionHandle(S{personIndex, count}); % expect a column vector
 
             bigX = [bigX; features']; % add the features as a row
 
