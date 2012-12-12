@@ -5,7 +5,7 @@ inputsize = size(trainX',1);
 %hidden
 net = patternnet([hidden],learnFunction);
 net.trainParam.epochs = iterations;
-net.trainParam.showWindow = 0;
+net.trainParam.showWindow = 1;
 [net,tr] = train(net,trainX',trainY');
 y = net(testX');
 err =0;
